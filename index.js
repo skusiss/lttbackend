@@ -9,16 +9,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Environment variables (set these in Vercel dashboard)
-const GMAIL_USER = process.env.GMAIL_USER; // e.g. yourname@gmail.com
-const GMAIL_PASS = process.env.GMAIL_PASS; // app password (16 chars)
+const GMAIL_USER = process.env.GMAIL_USER;
+const GMAIL_PASS = process.env.GMAIL_PASS;
 
 // Basic sanity check:
 if (!GMAIL_USER || !GMAIL_PASS) {
   console.warn("GMAIL_USER or GMAIL_PASS not set. Emails will fail.");
 }
 
-// create nodemailer transporter for Gmail SMTP
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -31,12 +29,7 @@ const transporter = nodemailer.createTransport({
 
 app.get("/", (req, res) => res.json({ ok: true, version: "1.0" }));
 
-/**
- * POST /api/send-otp
- * body: { email: string, otp: string }
- * - This endpoint sends the OTP via email using Gmail SMTP.
- * - No storage here — mobile stores OTP locally; backend only sends email.
- */
+
 app.post("/api/send-otp", async (req, res) => {
   try {
     const { email, otp } = req.body || {};
